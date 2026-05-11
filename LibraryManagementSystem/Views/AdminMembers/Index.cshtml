@@ -3,47 +3,56 @@
     ViewData["Title"] = "Manage Members";
 }
 
-<section class="card page-card">
-    <h2>Manage Members</h2>
-    <p class="muted">Admin can view registered member accounts and delete a member account if required.</p>
+<section class="admin-page">
+    <div class="admin-page-card admin-surface">
+        <div class="admin-section-header">
+            <div>
+                <h1 class="admin-section-title">Manage Members</h1>
+                <p class="admin-section-copy">Review registered member accounts and remove records when needed.</p>
+            </div>
+            <a class="btn admin-btn btn-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
+        </div>
 
-    @if (TempData["MemberMessage"] != null)
-    {
-        <p class="success-message">@TempData["MemberMessage"]</p>
-    }
+        @if (TempData["MemberMessage"] != null)
+        {
+            <p class="success-message">@TempData["MemberMessage"]</p>
+        }
 
-    @if (!Model.Any())
-    {
-        <p>No member accounts found.</p>
-    }
-    else
-    {
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Member ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var member in Model)
-                {
-                    <tr>
-                        <td>@member.Id</td>
-                        <td>@member.FullName</td>
-                        <td>@member.Email</td>
-                        <td>
-                            <form asp-action="Delete" method="post" onsubmit="return confirm('Delete this member account?');">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@member.Id" />
-                                <button class="btn btn-danger" type="submit">Delete Member</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+        @if (!Model.Any())
+        {
+            <p class="admin-empty">No member accounts found.</p>
+        }
+        else
+        {
+            <div class="admin-data-panel">
+                <table class="data-table admin-data-table">
+                    <thead>
+                        <tr>
+                            <th>Member ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var member in Model)
+                        {
+                            <tr>
+                                <td>@member.Id</td>
+                                <td>@member.FullName</td>
+                                <td>@member.Email</td>
+                                <td>
+                                    <form asp-action="Delete" method="post" class="inline-form" onsubmit="return confirm('Delete this member account?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@member.Id" />
+                                        <button class="btn admin-btn btn-danger" type="submit">Delete Member</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </section>

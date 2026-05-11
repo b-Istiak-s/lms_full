@@ -4,36 +4,53 @@
     ViewData["Title"] = "Fines";
 }
 
-<h2>Fines</h2>
+<section class="admin-page">
+    <div class="admin-page-card admin-surface">
+        <div class="admin-section-header">
+            <div>
+                <h1 class="admin-section-title">Fines</h1>
+                <p class="admin-section-copy">Track overdue charges and mark payments as they are settled.</p>
+            </div>
+            <a class="btn admin-btn btn-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
+        </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Book</th>
-            <th>User Name</th>
-            <th>Amount</th>
-            <th>Paid</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach(var f in Model)
-    {
-        <tr>
-            <td>@f.BorrowTransaction?.Book?.Title</td>
-            <td>@f.BorrowTransaction?.UserId</td>
-            <td>@f.Amount.ToString("C")</td>
-            <td>@(f.IsPaid ? "Yes" : "No")</td>
-            <td>
-                @if(!f.IsPaid)
+        <div class="admin-data-panel">
+            <table class="data-table admin-data-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>User Name</th>
+                        <th>Amount</th>
+                        <th>Paid</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var f in Model)
                 {
-                    <form asp-action="MarkPaid" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@f.FineId" />
-                        <button class="btn btn-sm btn-success">Mark Paid</button>
-                    </form>
+                    <tr>
+                        <td>@f.BorrowTransaction?.Book?.Title</td>
+                        <td>@f.BorrowTransaction?.UserId</td>
+                        <td>@f.Amount.ToString("C")</td>
+                        <td>
+                            <span class="admin-status-pill @(f.IsPaid ? "paid" : "unpaid")">
+                                @(f.IsPaid ? "Paid" : "Unpaid")
+                            </span>
+                        </td>
+                        <td>
+                            @if (!f.IsPaid)
+                            {
+                                <form asp-action="MarkPaid" method="post" class="inline-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@f.FineId" />
+                                    <button class="btn admin-btn btn-success">Mark Paid</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
                 }
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

@@ -4,40 +4,89 @@
     ViewData["Title"] = "Add Book";
 }
 
-<h2>Add a New Book</h2>
+<section class="admin-page">
+    <div class="admin-page-card admin-surface">
+        <div class="admin-section-header">
+            <div>
+                <h1 class="admin-section-title">Add Book</h1>
+                <p class="admin-section-copy">Create a catalog item, assign its author and genre, and upload a book cover in one step.</p>
+            </div>
+            <a class="btn admin-btn btn-light" asp-action="Index">Back to Books</a>
+        </div>
 
-<form asp-action="Create" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="mb-3">
-        <label class="form-label">Title</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        <div class="admin-form-layout">
+            <div class="admin-form-card">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="admin-form-grid">
+                        <div class="admin-field">
+                            <label asp-for="Title"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="admin-field">
+                            <label asp-for="ISBN"></label>
+                            <input asp-for="ISBN" class="form-control" />
+                            <span asp-validation-for="ISBN" class="text-danger"></span>
+                        </div>
+
+                        <div class="admin-field">
+                            <label asp-for="AuthorId">Author</label>
+                            <select asp-for="AuthorId" asp-items="ViewBag.AuthorOptions" class="form-select">
+                                <option value="0">Select existing author</option>
+                            </select>
+                            <span asp-validation-for="AuthorId" class="text-danger"></span>
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="newAuthorName">New Author</label>
+                            <input id="newAuthorName" type="text" name="newAuthorName" value="@ViewBag.NewAuthorName" class="form-control" placeholder="Type a new author name if needed" />
+                            <small>Leave this empty if you selected an author from the list.</small>
+                        </div>
+
+                        <div class="admin-field">
+                            <label asp-for="GenreId">Genre</label>
+                            <select asp-for="GenreId" asp-items="ViewBag.GenreOptions" class="form-select">
+                                <option value="0">Select existing genre</option>
+                            </select>
+                            <span asp-validation-for="GenreId" class="text-danger"></span>
+                        </div>
+
+                        <div class="admin-field">
+                            <label for="newGenreName">New Genre</label>
+                            <input id="newGenreName" type="text" name="newGenreName" value="@ViewBag.NewGenreName" class="form-control" placeholder="Type a new genre if needed" />
+                            <small>Use this when the genre is not already available.</small>
+                        </div>
+
+                        <div class="admin-field full">
+                            <label for="coverImage">Book Cover Image</label>
+                            <input id="coverImage" type="file" name="coverImage" accept="image/*" class="form-control" />
+                            <small>PNG, JPG, WEBP, and other browser-supported image formats are accepted.</small>
+                        </div>
+                    </div>
+
+                    <div class="admin-form-actions">
+                        <button type="submit" class="btn admin-btn btn-primary">Save Book</button>
+                        <a class="btn admin-btn btn-secondary" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+            <aside class="admin-side-card">
+                <div class="admin-image-preview">
+                    <span>Cover preview area</span>
+                </div>
+                <h2 class="h4 mb-3">Before you save</h2>
+                <ul class="admin-side-list">
+                    <li>Upload a clear cover image so the member-facing book pages look polished.</li>
+                    <li>Pick either an existing author or type a new author name.</li>
+                    <li>New books are added as available by default.</li>
+                </ul>
+            </aside>
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="form-label">ISBN</label>
-        <input asp-for="ISBN" class="form-control" />
-        <span asp-validation-for="ISBN" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Author</label>
-        <select asp-for="AuthorId" asp-items="ViewBag.AuthorOptions" class="form-select">
-            <option value="0">-- Select author --</option>
-        </select>
-        <div class="form-text">If not listed, type a new author name below.</div>
-        <input type="text" name="newAuthorName" value="@ViewBag.NewAuthorName" class="form-control mt-2" placeholder="Type a new author name here" />
-        <span asp-validation-for="AuthorId" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Genre</label>
-        <select asp-for="GenreId" asp-items="ViewBag.GenreOptions" class="form-select">
-            <option value="0">-- Select genre --</option>
-        </select>
-        <div class="form-text">If not listed, type a new genre name below.</div>
-        <input type="text" name="newGenreName" value="@ViewBag.NewGenreName" class="form-control mt-2" placeholder="Type a new genre name here" />
-        <span asp-validation-for="GenreId" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+</section>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")

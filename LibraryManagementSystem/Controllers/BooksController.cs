@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,11 +17,13 @@ namespace LibraryManagementSystem.Controllers
     {
         private readonly ApplicationDbContext dbContext;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public BooksController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public BooksController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             dbContext = context;
             this.userManager = userManager;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index(string? status, string? isbn)
@@ -88,7 +91,7 @@ namespace LibraryManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Book book, string? newAuthorName, string? newGenreName)
+        public async Task<IActionResult> Create(Book book, IFormFile? coverImage, string? newAuthorName, string? newGenreName)
         {
             newAuthorName = string.IsNullOrWhiteSpace(newAuthorName) ? null : newAuthorName.Trim();
             newGenreName = string.IsNullOrWhiteSpace(newGenreName) ? null : newGenreName.Trim();
@@ -116,6 +119,7 @@ namespace LibraryManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 book.IsAvailable = true;
+                book.CoverImagePath = await SaveCoverImageAsync(coverImage, book.CoverImagePath);
                 dbContext.Add(book);
                 await dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -137,9 +141,18 @@ namespace LibraryManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Book book, string? newAuthorName, string? newGenreName)
+        public async Task<IActionResult> Edit(int id, Book book, IFormFile? coverImage, string? newAuthorName, string? newGenreName)
         {
             if (id != book.BookId) return NotFound();
+
+            var existingBook = await dbContext.Books
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.BookId == id);
+
+            if (existingBook == null)
+            {
+                return NotFound();
+            }
 
             newAuthorName = string.IsNullOrWhiteSpace(newAuthorName) ? null : newAuthorName.Trim();
             newGenreName = string.IsNullOrWhiteSpace(newGenreName) ? null : newGenreName.Trim();
@@ -166,11 +179,13 @@ namespace LibraryManagementSystem.Controllers
 
             if (ModelState.IsValid)
             {
+                book.CoverImagePath = await SaveCoverImageAsync(coverImage, existingBook.CoverImagePath);
                 dbContext.Update(book);
                 await dbContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
+            book.CoverImagePath = existingBook.CoverImagePath;
             PopulateDropdowns(book.AuthorId, book.GenreId, newAuthorName, newGenreName);
             return View(book);
         }
@@ -253,6 +268,45 @@ namespace LibraryManagementSystem.Controllers
             dbContext.Genres.Add(createdGenre);
             await dbContext.SaveChangesAsync();
             return createdGenre.GenreId;
+        }
+
+        private async Task<string?> SaveCoverImageAsync(IFormFile? coverImage, string? currentCoverPath)
+        {
+            if (coverImage == null || coverImage.Length == 0)
+            {
+                return currentCoverPath;
+            }
+
+            var uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images", "books", "uploads");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var extension = Path.GetExtension(coverImage.FileName);
+            var fileName = $"{Guid.NewGuid():N}{extension}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            await using (var stream = System.IO.File.Create(filePath))
+            {
+                await coverImage.CopyToAsync(stream);
+            }
+
+            DeleteUploadedCoverIfManaged(currentCoverPath);
+            return $"/images/books/uploads/{fileName}";
+        }
+
+        private void DeleteUploadedCoverIfManaged(string? coverPath)
+        {
+            if (string.IsNullOrWhiteSpace(coverPath) || !coverPath.StartsWith("/images/books/uploads/", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var relativePath = coverPath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+            var fullPath = Path.Combine(webHostEnvironment.WebRootPath, relativePath);
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
         }
     }
 }

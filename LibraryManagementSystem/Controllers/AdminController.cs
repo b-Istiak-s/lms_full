@@ -2,6 +2,7 @@
 using LibraryManagementSystem.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -15,8 +16,14 @@ namespace LibraryManagementSystem.Controllers
             dbContext = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            ViewBag.TotalBooks = await dbContext.Books.CountAsync();
+            ViewBag.AvailableBooks = await dbContext.Books.CountAsync(b => b.IsAvailable);
+            ViewBag.BorrowedBooks = await dbContext.BorrowTransactions.CountAsync(b => !b.IsReturned);
+            ViewBag.MemberCount = await dbContext.Users.CountAsync();
+            ViewBag.PendingReservations = await dbContext.Reservations.CountAsync();
+            ViewBag.UnpaidFines = await dbContext.Fines.CountAsync(f => !f.IsPaid);
             return View();
         }
     }

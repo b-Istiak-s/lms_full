@@ -3,31 +3,24 @@
     ViewData["Title"] = "Reports";
 }
 
-<h2>Reports</h2>
+<section class="admin-page">
+    <div class="admin-page-card admin-surface">
+        <div class="admin-section-header">
+            <div>
+                <h1 class="admin-section-title">Reports</h1>
+                <p class="admin-section-copy">Quick snapshot of stock, active borrowing, overdue items, and unpaid fines.</p>
+            </div>
+            <div class="admin-btn-group">
+                <a class="btn admin-btn btn-light" asp-controller="Reservation" asp-action="Index">Reservations</a>
+                <a class="btn admin-btn btn-secondary" asp-controller="Admin" asp-action="Index">Dashboard</a>
+            </div>
+        </div>
 
-<div class="row">
-    <div class="col-md-3">
-        <div class="card p-3">
-            <strong>Total Books</strong>
-            <div>@ViewBag.TotalBooks</div>
+        <div class="admin-summary-grid">
+            <div class="admin-summary-card"><span>Total Books</span><strong>@ViewBag.TotalBooks</strong></div>
+            <div class="admin-summary-card"><span>Currently Borrowed</span><strong>@ViewBag.Borrowed</strong></div>
+            <div class="admin-summary-card"><span>Overdue</span><strong>@ViewBag.Overdue</strong></div>
+            <div class="admin-summary-card"><span>Unpaid Fines</span><strong>@ViewBag.UnpaidFines.ToString("C")</strong></div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card p-3">
-            <strong>Currently Borrowed</strong>
-            <div>@ViewBag.Borrowed</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card p-3">
-            <strong>Overdue</strong>
-            <div>@ViewBag.Overdue</div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card p-3">
-            <strong>Unpaid Fines</strong>
-            <div>@ViewBag.UnpaidFines.ToString("C")</div>
-        </div>
-    </div>
-</div>
+</section>

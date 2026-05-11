@@ -3,37 +3,108 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h2>Admin Dashboard</h2>
+<section class="admin-dashboard admin-surface">
+    <div class="admin-dashboard-top">
+        <div class="admin-brandline">
+            <div class="admin-brandmark">
+                <img src="~/images/static/profile.png" alt="Library brand" />
+                <span>Library Hub</span>
+            </div>
+            <div class="admin-welcome">
+                <p class="admin-welcome-kicker">Aubowan</p>
+                <h1 class="admin-welcome-title">WELCOME</h1>
+            </div>
+            <div class="record-count">Dashboard Overview</div>
+        </div>
+        <div class="admin-crumbs">
+            <div><strong>Dashboard</strong></div>
+            <div>Admin &gt; Dashboard</div>
+        </div>
+    </div>
 
-<div class="row">
-    <div class="col-md-3">
-        <a class="btn btn-primary w-100" asp-controller="Books" asp-action="Index">Manage Books</a>
-    </div>
-    <div class="col-md-3">
-        <a class="btn btn-secondary w-100" asp-controller="Borrow" asp-action="Index">Borrowings</a>
-    </div>
-    <div class="col-md-3">
-        <a class="btn btn-info w-100" asp-controller="Reservation" asp-action="Index">Reservations</a>
-    </div>
-    <div class="col-md-3">
-        <a class="btn btn-warning w-100" asp-controller="Fines" asp-action="Index">Fines</a>
-    </div>
-</div>
+    <div class="admin-dashboard-grid">
+        <a class="admin-dashboard-card admin-card-lilac" asp-controller="AdminMembers" asp-action="Index">
+            <img class="admin-card-image" src="~/images/static/profile.png" alt="" />
+            <h2 class="admin-card-title">Add Members</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Review accounts and remove inactive members.</p>
+                <span class="admin-card-count">@ViewBag.MemberCount</span>
+            </div>
+        </a>
 
-<div class="row mt-3">
-    <div class="col-md-3">
-        <a class="btn btn-dark w-100" asp-controller="Reports" asp-action="Index">Reports</a>
-    </div>
-    <div class="col-md-3">
-        <a class="btn btn-light w-100" asp-controller="LibraryProfile" asp-action="Edit">Library Profile</a>
-    </div>
-</div>
+        <a class="admin-dashboard-card admin-card-green" asp-controller="AdminMembers" asp-action="Index">
+            <img class="admin-card-image" src="~/images/static/profile.png" alt="" />
+            <h2 class="admin-card-title">View Members</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Open the member list and manage registrations.</p>
+                <span class="admin-card-count">@ViewBag.MemberCount</span>
+            </div>
+        </a>
 
-<div class="row mt-3">
-    <div class="col-md-3">
-        <a class="btn btn-primary w-100" asp-controller="AdminMembers" asp-action="Index">Manage Members</a>
+        <a class="admin-dashboard-card admin-card-lime" asp-controller="Books" asp-action="Create">
+            <img class="admin-card-image" src="~/images/static/stack-of-books.png" alt="" />
+            <h2 class="admin-card-title">Add Books</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Create a catalog record and upload a cover image.</p>
+                <span class="admin-card-count">@ViewBag.TotalBooks</span>
+            </div>
+        </a>
+
+        <a class="admin-dashboard-card admin-card-orange" asp-controller="Books" asp-action="Index">
+            <img class="admin-card-image" src="~/images/static/stack-of-books.png" alt="" />
+            <h2 class="admin-card-title">View Books</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Browse inventory, availability, and live borrowers.</p>
+                <span class="admin-card-count">@ViewBag.AvailableBooks</span>
+            </div>
+        </a>
+
+        <a class="admin-dashboard-card admin-card-coral" asp-controller="AdminBorrowRequests" asp-action="Index" asp-route-status="borrowed">
+            <img class="admin-card-image" src="~/images/static/borrow.png" alt="" />
+            <h2 class="admin-card-title">Issued Books</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Track active loans and complete returns.</p>
+                <span class="admin-card-count">@ViewBag.BorrowedBooks</span>
+            </div>
+        </a>
+
+        <a class="admin-dashboard-card admin-card-slate" asp-controller="Fines" asp-action="Index">
+            <img class="admin-card-image" src="~/images/static/fine.png" alt="" />
+            <h2 class="admin-card-title">Returned Books</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Check fines, payments, and closed borrowing records.</p>
+                <span class="admin-card-count">@ViewBag.UnpaidFines</span>
+            </div>
+        </a>
+
+        <a class="admin-dashboard-card admin-card-olive" asp-controller="Borrow" asp-action="Index">
+            <img class="admin-card-image" src="~/images/static/borrow.png" alt="" />
+            <h2 class="admin-card-title">Book History</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Inspect manual borrowing history and fine updates.</p>
+                <span class="admin-card-count">@ViewBag.BorrowedBooks</span>
+            </div>
+        </a>
+
+        <a class="admin-dashboard-card admin-card-sage" asp-controller="Reports" asp-action="Index">
+            <img class="admin-card-image" src="~/images/static/report.png" alt="" />
+            <h2 class="admin-card-title">Study Room</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Open reports, reservations, and profile controls.</p>
+                <span class="admin-card-count">@ViewBag.PendingReservations</span>
+            </div>
+        </a>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" class="admin-signout-form">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="admin-dashboard-card admin-card-magenta">
+                <img class="admin-card-image" src="~/images/static/reserve.png" alt="" />
+                <h2 class="admin-card-title">Sign Out</h2>
+                <div class="admin-card-meta">
+                    <p class="admin-card-caption">Leave the admin console safely.</p>
+                    <span class="admin-card-count">Exit</span>
+                </div>
+            </button>
+        </form>
     </div>
-    <div class="col-md-3">
-        <a class="btn btn-success w-100" asp-controller="AdminBorrowRequests" asp-action="Index">Borrowed Books</a>
-    </div>
-</div>
+</section>

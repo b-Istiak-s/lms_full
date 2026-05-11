@@ -4,70 +4,87 @@
     ViewData["Title"] = "Borrowings";
 }
 
-<h2>Borrowings</h2>
+<section class="admin-page">
+    <div class="admin-page-card admin-surface">
+        <div class="admin-section-header">
+            <div>
+                <h1 class="admin-section-title">Borrowings</h1>
+                <p class="admin-section-copy">Manage manual return actions and add or revise fines for recorded borrowing transactions.</p>
+            </div>
+            <a class="btn admin-btn btn-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
+        </div>
 
-@if (TempData["FineError"] != null)
-{
-    <div class="alert alert-danger">@TempData["FineError"]</div>
-}
+        @if (TempData["FineError"] != null)
+        {
+            <div class="alert alert-danger">@TempData["FineError"]</div>
+        }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Book</th>
-            <th>Member ID</th>
-            <th>Borrow Date</th>
-            <th>Due Date</th>
-            <th>Returned</th>
-            <th>Return Date</th>
-            <th>Fine</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach(var b in Model)
-    {
-        <tr>
-            <td>@b.Book?.Title</td>
-            <td>@b.UserId</td>
-            <td>@b.BorrowDate.ToShortDateString()</td>
-            <td>@b.DueDate.ToShortDateString()</td>
-            <td>@(b.IsReturned ? "Yes" : "No")</td>
-            <td>@(b.ReturnDate.HasValue ? b.ReturnDate.Value.ToShortDateString() : "-")</td>
-            <td>@(b.Fine != null ? b.Fine.Amount.ToString("C") : "-")</td>
-            <td>
-                @if(!b.IsReturned)
+        <div class="admin-data-panel">
+            <table class="data-table admin-data-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Member ID</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Returned</th>
+                        <th>Return Date</th>
+                        <th>Fine</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var b in Model)
                 {
-                    <button type="button"
-                            class="btn btn-sm btn-success"
-                            data-bs-toggle="modal"
-                            data-bs-target="#returnModal"
-                            data-id="@b.BorrowTransactionId"
-                            data-book="@b.Book?.Title"
-                            data-member="@b.UserId"
-                            data-borrow-date='@b.BorrowDate.ToString("yyyy-MM-dd")'>
-                        Return
-                    </button>
+                    <tr>
+                        <td>@b.Book?.Title</td>
+                        <td>@b.UserId</td>
+                        <td>@b.BorrowDate.ToShortDateString()</td>
+                        <td>@b.DueDate.ToShortDateString()</td>
+                        <td>
+                            <span class="admin-status-pill @(b.IsReturned ? "available" : "unavailable")">
+                                @(b.IsReturned ? "Yes" : "No")
+                            </span>
+                        </td>
+                        <td>@(b.ReturnDate.HasValue ? b.ReturnDate.Value.ToShortDateString() : "-")</td>
+                        <td>@(b.Fine != null ? b.Fine.Amount.ToString("C") : "-")</td>
+                        <td>
+                            <div class="admin-btn-group">
+                                @if (!b.IsReturned)
+                                {
+                                    <button type="button"
+                                            class="btn admin-btn btn-success"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#returnModal"
+                                            data-id="@b.BorrowTransactionId"
+                                            data-book="@b.Book?.Title"
+                                            data-member="@b.UserId"
+                                            data-borrow-date='@b.BorrowDate.ToString("yyyy-MM-dd")'>
+                                        Return
+                                    </button>
+                                }
+                                <button type="button"
+                                        class="btn admin-btn btn-warning"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#fineModal"
+                                        data-borrow-id="@b.BorrowTransactionId"
+                                        data-book-title="@b.Book?.Title"
+                                        data-member-id="@b.UserId"
+                                        data-amount="@(b.Fine?.Amount ?? 0)">
+                                    @(b.Fine != null ? "Edit Fine" : "Add Fine")
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                 }
-                <button type="button"
-                        class="btn btn-sm btn-warning"
-                        data-bs-toggle="modal"
-                        data-bs-target="#fineModal"
-                        data-borrow-id="@b.BorrowTransactionId"
-                        data-book-title="@b.Book?.Title"
-                        data-member-id="@b.UserId"
-                        data-amount="@(b.Fine?.Amount ?? 0)">
-                    @(b.Fine != null ? "Edit Fine" : "Add Fine")
-                </button>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
 <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="returnModalLabel">Return Book and Auto Calculate Fine</h5>
@@ -96,8 +113,8 @@
                     <p class="muted">The system recalculates the due date from the borrowing rule and records the fine automatically.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Return and Calculate Fine</button>
+                    <button type="button" class="btn admin-btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn admin-btn btn-success">Return and Calculate Fine</button>
                 </div>
             </form>
         </div>
@@ -105,13 +122,14 @@
 </div>
 
 <div class="modal fade" id="fineModal" tabindex="-1" aria-labelledby="fineModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="fineModalLabel">Add / Edit Fine</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form asp-action="AddFine" method="post">
+                @Html.AntiForgeryToken()
                 <div class="modal-body">
                     <input type="hidden" id="borrowTransactionId" name="borrowTransactionId" />
                     <div class="mb-3">
@@ -133,8 +151,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Fine</button>
+                    <button type="button" class="btn admin-btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn admin-btn btn-primary">Save Fine</button>
                 </div>
             </form>
         </div>
@@ -160,15 +178,10 @@
             const button = event.relatedTarget;
             if (!button) return;
 
-            const borrowId = button.getAttribute('data-borrow-id');
-            const bookTitle = button.getAttribute('data-book-title');
-            const memberId = button.getAttribute('data-member-id');
-            const amount = button.getAttribute('data-amount');
-
-            document.getElementById('borrowTransactionId').value = borrowId ?? '';
-            document.getElementById('fineBookTitle').value = bookTitle ?? '';
-            document.getElementById('fineMemberId').value = memberId ?? '';
-            document.getElementById('fineAmount').value = amount ?? '0';
+            document.getElementById('borrowTransactionId').value = button.getAttribute('data-borrow-id') ?? '';
+            document.getElementById('fineBookTitle').value = button.getAttribute('data-book-title') ?? '';
+            document.getElementById('fineMemberId').value = button.getAttribute('data-member-id') ?? '';
+            document.getElementById('fineAmount').value = button.getAttribute('data-amount') ?? '0';
             document.getElementById('fineIsPaid').checked = false;
         });
     </script>

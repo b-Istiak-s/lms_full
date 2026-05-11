@@ -3,6 +3,13 @@
 @{
     var currentUser = User.Identity?.IsAuthenticated == true ? await UserManager.GetUserAsync(User) : null;
     var displayName = !string.IsNullOrWhiteSpace(currentUser?.FullName) ? currentUser.FullName : currentUser?.Email;
+    var controllerName = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var actionName = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var isAdminPage = User.IsInRole("Admin") && new[]
+    {
+        "Admin", "Books", "Borrow", "Reservation", "Fines", "Reports", "LibraryProfile", "AdminMembers", "AdminBorrowRequests"
+    }.Contains(controllerName, StringComparer.OrdinalIgnoreCase);
+    var bodyClass = isAdminPage ? $"admin-body admin-{controllerName.ToLowerInvariant()} admin-{actionName.ToLowerInvariant()}" : string.Empty;
     var initials = "U";
     if (!string.IsNullOrWhiteSpace(displayName))
     {
@@ -27,10 +34,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LibraryManagementSystem.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="@bodyClass">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow @(isAdminPage ? "admin-navbar" : "mb-3")">
+            <div class="container-fluid @(isAdminPage ? "admin-container" : string.Empty)">
                 <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">LibraryManagementSystem</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -104,14 +111,14 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="@(isAdminPage ? "admin-container admin-shell-wrap" : "container")">
+        <main role="main" class="@(isAdminPage ? "admin-shell" : "pb-3")">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="border-top footer text-muted @(isAdminPage ? "admin-footer" : string.Empty)">
+        <div class="@(isAdminPage ? "admin-container" : "container")">
             &copy; 2026 - LibraryManagementSystem
         </div>
     </footer>
