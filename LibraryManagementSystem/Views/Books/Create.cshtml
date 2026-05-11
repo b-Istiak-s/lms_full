@@ -14,11 +14,11 @@
             <a class="btn admin-btn btn-light" asp-action="Index">Back to Books</a>
         </div>
 
-        <div class="admin-form-layout">
-            <div class="admin-form-card">
+        <div class="admin-form-layout admin-form-layout-compact">
+            <div class="admin-form-card admin-form-card-compact">
                 <form asp-action="Create" method="post" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                    <div class="admin-form-grid">
+                    <div class="admin-form-grid admin-form-grid-compact">
                         <div class="admin-field">
                             <label asp-for="Title"></label>
                             <input asp-for="Title" class="form-control" />
@@ -73,7 +73,7 @@
                 </form>
             </div>
 
-            <aside class="admin-side-card">
+            <aside class="admin-side-card admin-side-card-compact">
                 <div class="admin-image-preview">
                     <span>Cover preview area</span>
                 </div>

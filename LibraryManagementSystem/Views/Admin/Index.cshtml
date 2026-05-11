@@ -23,12 +23,12 @@
     </div>
 
     <div class="admin-dashboard-grid">
-        <a class="admin-dashboard-card admin-card-lilac" asp-controller="AdminMembers" asp-action="Index">
+        <a class="admin-dashboard-card admin-card-lilac" asp-controller="LibraryProfile" asp-action="Edit">
             <img class="admin-card-image" src="~/images/static/profile.png" alt="" />
-            <h2 class="admin-card-title">Add Members</h2>
+            <h2 class="admin-card-title">Library Profile</h2>
             <div class="admin-card-meta">
-                <p class="admin-card-caption">Review accounts and remove inactive members.</p>
-                <span class="admin-card-count">@ViewBag.MemberCount</span>
+                <p class="admin-card-caption">Update library details, contact info, and borrowing rules.</p>
+                <span class="admin-card-count">Edit</span>
             </div>
         </a>
 
@@ -61,7 +61,7 @@
 
         <a class="admin-dashboard-card admin-card-coral" asp-controller="AdminBorrowRequests" asp-action="Index" asp-route-status="borrowed">
             <img class="admin-card-image" src="~/images/static/borrow.png" alt="" />
-            <h2 class="admin-card-title">Issued Books</h2>
+            <h2 class="admin-card-title">Borrowed Books</h2>
             <div class="admin-card-meta">
                 <p class="admin-card-caption">Track active loans and complete returns.</p>
                 <span class="admin-card-count">@ViewBag.BorrowedBooks</span>
@@ -70,7 +70,7 @@
 
         <a class="admin-dashboard-card admin-card-slate" asp-controller="Fines" asp-action="Index">
             <img class="admin-card-image" src="~/images/static/fine.png" alt="" />
-            <h2 class="admin-card-title">Returned Books</h2>
+            <h2 class="admin-card-title">Fines</h2>
             <div class="admin-card-meta">
                 <p class="admin-card-caption">Check fines, payments, and closed borrowing records.</p>
                 <span class="admin-card-count">@ViewBag.UnpaidFines</span>
@@ -88,7 +88,7 @@
 
         <a class="admin-dashboard-card admin-card-sage" asp-controller="Reports" asp-action="Index">
             <img class="admin-card-image" src="~/images/static/report.png" alt="" />
-            <h2 class="admin-card-title">Study Room</h2>
+            <h2 class="admin-card-title">Reports</h2>
             <div class="admin-card-meta">
                 <p class="admin-card-caption">Open reports, reservations, and profile controls.</p>
                 <span class="admin-card-count">@ViewBag.PendingReservations</span>
