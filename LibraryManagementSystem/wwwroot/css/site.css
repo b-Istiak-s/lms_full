@@ -606,8 +606,7 @@ body {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(249, 250, 252, 0.96));
 }
 
-/* Horizontal scroll wrapper so we don't create a new scroll container that
-   interferes with sticky table headers. Wrap tables using .table-scroll */
+/* Horizontal scroll wrapper for wide tables. */
 .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -635,10 +634,6 @@ body {
 }
 
 .admin-data-table th {
-    position: sticky;
-    /* sit below the global navbar (z-index:1030) but above panel content */
-    top: var(--admin-sticky-offset);
-    z-index: 1029;
     background: #4b2aad;
     box-shadow: 0 6px 12px rgba(11, 15, 30, 0.06);
 }
