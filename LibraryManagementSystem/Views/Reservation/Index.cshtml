@@ -1,0 +1,64 @@
+@* Person 3: Reservation management page. *@
+@model IEnumerable<LibraryManagementSystem.Models.Reservation>
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<section class="card page-card">
+    <h2>Reservations</h2>
+    <p class="muted">Admin can review reserved books with member details and book information.</p>
+
+    @if (!Model.Any())
+    {
+        <p>No reservations found.</p>
+    }
+    else
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Reservation ID</th>
+                    <th>Member ID / Email</th>
+                    <th>Book</th>
+                    <th>ISBN</th>
+                    <th>Author</th>
+                    <th>Genre</th>
+                    <th>Book Status</th>
+                    <th>Reservation Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var r in Model)
+            {
+                <tr>
+                    <td>@r.ReservationId</td>
+                    <td>@r.UserId</td>
+                    <td>@r.Book?.Title</td>
+                    <td>@r.Book?.ISBN</td>
+                    <td>@r.Book?.Author?.Name</td>
+                    <td>@r.Book?.Genre?.Name</td>
+                    <td>
+                        @if (r.Book?.IsAvailable == true)
+                        {
+                            <span class="status-available">Available</span>
+                        }
+                        else
+                        {
+                            <span class="status-borrowed">Unavailable</span>
+                        }
+                    </td>
+                    <td>@r.ReservationDate.ToShortDateString()</td>
+                    <td>
+                        <form asp-action="Cancel" method="post" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@r.ReservationId" />
+                            <button class="btn btn-sm btn-danger">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</section>

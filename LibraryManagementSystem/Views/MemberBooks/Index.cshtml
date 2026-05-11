@@ -1,0 +1,56 @@
+@model IEnumerable<LibraryManagementSystem.Models.Book>
+@{
+    ViewData["Title"] = "Browse Available Books";
+}
+
+<section class="card page-card">
+    <div class="page-heading-row">
+        <div>
+            <h2>Browse Available Books</h2>
+            <p class="muted">Only currently available books are shown here. Use ISBN search to find a specific book quickly.</p>
+        </div>
+        <span class="record-count">@Model.Count() available</span>
+    </div>
+
+    @if (TempData["BorrowMessage"] != null)
+    {
+        <p class="success-message">@TempData["BorrowMessage"]</p>
+    }
+
+    <form asp-action="Index" method="get" class="search-row">
+        <input type="text" name="isbn" value="@ViewBag.SearchIsbn" placeholder="Search by ISBN only" />
+        <button class="btn btn-primary" type="submit">Search</button>
+        <a class="btn btn-secondary" asp-action="Index">Clear</a>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <p>No available books found.</p>
+    }
+    else
+    {
+        <div class="book-grid">
+            @foreach (var book in Model)
+            {
+                <article class="book-card">
+                    <div class="book-image-wrap">
+                        @if (!string.IsNullOrWhiteSpace(book.CoverImagePath))
+                        {
+                            <img src="@book.CoverImagePath" alt="@book.Title cover" class="book-cover-img" onerror="this.onerror=null;this.src='/images/books/default.svg';" />
+                        }
+                        else
+                        {
+                            <div class="book-cover">@(book.Genre?.Name ?? "Book")</div>
+                        }
+                    </div>
+                    <h3>@book.Title</h3>
+                    <p><strong>Author:</strong> @(book.Author?.Name ?? "Unknown")</p>
+                    <p><strong>ISBN:</strong> @book.ISBN</p>
+                    <p><strong>Genre:</strong> @(book.Genre?.Name ?? "Unknown")</p>
+                    <p class="status-available">Available</p>
+                    <a class="btn btn-primary" asp-controller="MemberBooks" asp-action="Details" asp-route-id="@book.BookId">View Details</a>
+                </article>
+            }
+        </div>
+    }
+</section>

@@ -1,0 +1,38 @@
+@model LibraryManagementSystem.Models.Book
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<section class="card page-card book-details">
+    <div class="book-detail-layout">
+        <div class="book-detail-cover">
+            @if (!string.IsNullOrWhiteSpace(Model.CoverImagePath))
+            {
+                <img src="@Model.CoverImagePath" alt="@Model.Title cover" class="book-cover-large" onerror="this.onerror=null;this.src='/images/books/default.svg';" />
+            }
+            else
+            {
+                <div class="book-cover large">@(Model.Genre?.Name ?? "Book")</div>
+            }
+        </div>
+        <div>
+            <h2>@Model.Title</h2>
+            <p><strong>Author:</strong> @(Model.Author?.Name ?? "Unknown")</p>
+            <p><strong>Genre:</strong> @(Model.Genre?.Name ?? "Unknown")</p>
+            <p><strong>ISBN:</strong> @Model.ISBN</p>
+            <p><strong>Status:</strong> <span class="status-available">@(Model.IsAvailable ? "Available" : "Currently Borrowed")</span></p>
+            <p class="muted">This page shows the selected book details before the member borrows it.</p>
+
+            @if (Model.IsAvailable)
+            {
+                <form asp-controller="MemberBorrow" asp-action="Request" method="post" class="inline-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="bookId" value="@Model.BookId" />
+                    <button class="btn btn-primary" type="submit">Borrow Book</button>
+                </form>
+            }
+
+            <a class="btn btn-secondary" asp-controller="MemberBooks" asp-action="Index">Back to Available Books</a>
+        </div>
+    </div>
+</section>

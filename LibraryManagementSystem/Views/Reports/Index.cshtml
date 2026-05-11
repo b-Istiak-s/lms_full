@@ -1,0 +1,33 @@
+@* Person 3: Admin reports page for library activity summary. *@
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h2>Reports</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <strong>Total Books</strong>
+            <div>@ViewBag.TotalBooks</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <strong>Currently Borrowed</strong>
+            <div>@ViewBag.Borrowed</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <strong>Overdue</strong>
+            <div>@ViewBag.Overdue</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <strong>Unpaid Fines</strong>
+            <div>@ViewBag.UnpaidFines.ToString("C")</div>
+        </div>
+    </div>
+</div>

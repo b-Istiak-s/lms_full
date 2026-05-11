@@ -1,0 +1,49 @@
+@model List<LibraryManagementSystem.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Manage Members";
+}
+
+<section class="card page-card">
+    <h2>Manage Members</h2>
+    <p class="muted">Admin can view registered member accounts and delete a member account if required.</p>
+
+    @if (TempData["MemberMessage"] != null)
+    {
+        <p class="success-message">@TempData["MemberMessage"]</p>
+    }
+
+    @if (!Model.Any())
+    {
+        <p>No member accounts found.</p>
+    }
+    else
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Member ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in Model)
+                {
+                    <tr>
+                        <td>@member.Id</td>
+                        <td>@member.FullName</td>
+                        <td>@member.Email</td>
+                        <td>
+                            <form asp-action="Delete" method="post" onsubmit="return confirm('Delete this member account?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@member.Id" />
+                                <button class="btn btn-danger" type="submit">Delete Member</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

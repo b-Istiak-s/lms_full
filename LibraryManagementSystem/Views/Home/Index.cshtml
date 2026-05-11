@@ -1,0 +1,122 @@
+@using LibraryManagementSystem.Models
+@{
+    ViewData["Title"] = "Home";
+    var newArrivals = ViewBag.NewArrivals as List<Book> ?? new List<Book>();
+    var availableBooks = ViewBag.AvailableBooks as List<Book> ?? new List<Book>();
+}
+
+<section class="hero-card">
+    <h1>Library Management System</h1>
+    <p>This web application supports library book management, borrowing, reservations, fines, reports, member browsing and feedback.</p>
+</section>
+
+<section class="card page-card">
+    <h2>Library Overview</h2>
+    <div class="module-grid">
+        <div><h3>Total Books</h3><p>@ViewBag.TotalBooks</p></div>
+        <div><h3>Currently Available</h3><p>@ViewBag.AvailableCount</p></div>
+        <div><h3>Currently Borrowed</h3><p>@ViewBag.BorrowedCount</p></div>
+    </div>
+</section>
+
+<section class="card page-card">
+    <h2>New Arrivals</h2>
+    <div class="book-grid">
+        @foreach (var book in newArrivals)
+        {
+            <article class="book-card">
+                <div class="book-image-wrap">
+                    @if (!string.IsNullOrWhiteSpace(book.CoverImagePath))
+                    {
+                        <img src="@book.CoverImagePath" alt="@book.Title cover" class="book-cover-img" onerror="this.onerror=null;this.src='/images/books/default.svg';" />
+                    }
+                    else
+                    {
+                        <div class="book-cover">@(book.Genre?.Name ?? "Book")</div>
+                    }
+                </div>
+                <h3>@book.Title</h3>
+                <p><strong>Author:</strong> @(book.Author?.Name ?? "Unknown")</p>
+                <p><strong>ISBN:</strong> @book.ISBN</p>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="card page-card">
+    <h2>Currently Available Books</h2>
+    <div class="book-grid">
+        @foreach (var book in availableBooks)
+        {
+            <article class="book-card">
+                <h3>@book.Title</h3>
+                <p><strong>Author:</strong> @(book.Author?.Name ?? "Unknown")</p>
+                <p><strong>ISBN:</strong> @book.ISBN</p>
+                <p class="status-available">Available</p>
+            </article>
+        }
+    </div>
+    <a class="btn btn-primary" asp-controller="MemberBooks" asp-action="Index">Browse all available books</a>
+</section>
+
+<section class="card page-card">
+    <h2>Group Members and Work Division</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Main Responsibility</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Momo Bhuiyan</td>
+                <td>20032613</td>
+                <td>Database, ERD, models, DbContext and migrations</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Person 2</td>
+                <td>To be updated</td>
+                <td>Login, registration, roles and security</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Person 3</td>
+                <td>To be updated</td>
+                <td>Admin and librarian module</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Person 4</td>
+                <td>To be updated</td>
+                <td>Member pages and frontend design</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="card page-card">
+    <h2>System Modules</h2>
+    <div class="module-grid">
+        <div>
+            <h3>Database and Models</h3>
+            <p>Stores books, authors, genres, borrow records, reservations, fines, feedback, library profile and borrowing rules.</p>
+        </div>
+        <div>
+            <h3>Login and Security</h3>
+            <p>Supports registration, login, logout, roles and protected admin pages.</p>
+        </div>
+        <div>
+            <h3>Admin Module</h3>
+            <p>Allows librarians to manage books, borrowings, reservations, fines, reports and library profile.</p>
+        </div>
+        <div>
+            <h3>Member Module</h3>
+            <p>Allows members to browse books, borrow books, view history, check fines and provide feedback.</p>
+        </div>
+    </div>
+</section>

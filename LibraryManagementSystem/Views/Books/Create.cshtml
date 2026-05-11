@@ -1,0 +1,44 @@
+@* Person 3: Create book page for the admin/librarian module. *@
+@model LibraryManagementSystem.Models.Book
+@{
+    ViewData["Title"] = "Add Book";
+}
+
+<h2>Add a New Book</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">ISBN</label>
+        <input asp-for="ISBN" class="form-control" />
+        <span asp-validation-for="ISBN" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Author</label>
+        <select asp-for="AuthorId" asp-items="ViewBag.AuthorOptions" class="form-select">
+            <option value="0">-- Select author --</option>
+        </select>
+        <div class="form-text">If not listed, type a new author name below.</div>
+        <input type="text" name="newAuthorName" value="@ViewBag.NewAuthorName" class="form-control mt-2" placeholder="Type a new author name here" />
+        <span asp-validation-for="AuthorId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Genre</label>
+        <select asp-for="GenreId" asp-items="ViewBag.GenreOptions" class="form-select">
+            <option value="0">-- Select genre --</option>
+        </select>
+        <div class="form-text">If not listed, type a new genre name below.</div>
+        <input type="text" name="newGenreName" value="@ViewBag.NewGenreName" class="form-control mt-2" placeholder="Type a new genre name here" />
+        <span asp-validation-for="GenreId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

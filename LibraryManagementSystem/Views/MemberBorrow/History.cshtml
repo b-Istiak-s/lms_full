@@ -1,0 +1,58 @@
+@model List<LibraryManagementSystem.Models.BorrowTransaction>
+@{
+    ViewData["Title"] = "My Borrow Records";
+}
+
+<section class="card page-card">
+    <h2>My Borrow Records</h2>
+    <p class="muted">This page shows the books you have borrowed, due dates, return status, and any fine information.</p>
+
+    @if (TempData["BorrowMessage"] != null)
+    {
+        <p class="success-message">@TempData["BorrowMessage"]</p>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>No borrow records yet.</p>
+    }
+    else
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>ISBN</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th>Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@(item.Book?.Title ?? "Unknown")</td>
+                        <td>@(item.Book?.ISBN ?? "-")</td>
+                        <td>@item.BorrowDate.ToShortDateString()</td>
+                        <td>@item.DueDate.ToShortDateString()</td>
+                        <td>@(item.ReturnDate.HasValue ? item.ReturnDate.Value.ToShortDateString() : "-")</td>
+                        <td>@(item.IsReturned ? "Returned" : "Borrowed")</td>
+                        <td>
+                            @if (item.Fine != null)
+                            {
+                                <span>$@item.Fine.Amount.ToString("0.00") (@(item.Fine.IsPaid ? "Paid" : "Unpaid"))</span>
+                            }
+                            else
+                            {
+                                <span>No fine</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

@@ -1,0 +1,20 @@
+@* Person 3: Book details page for admin review. *@
+@model LibraryManagementSystem.Models.Book
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<h2>@Model.Title</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">ISBN</dt>
+    <dd class="col-sm-10">@Model.ISBN</dd>
+    <dt class="col-sm-2">Author</dt>
+    <dd class="col-sm-10">@Model.Author?.Name</dd>
+    <dt class="col-sm-2">Genre</dt>
+    <dd class="col-sm-10">@Model.Genre?.Name</dd>
+    <dt class="col-sm-2">Available</dt>
+    <dd class="col-sm-10">@(Model.IsAvailable ? "Yes" : "No")</dd>
+</dl>
+
+<a class="btn btn-secondary" asp-action="Index">Back</a>

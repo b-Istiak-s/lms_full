@@ -1,0 +1,39 @@
+@* Person 3: Admin dashboard for librarian management features. *@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <a class="btn btn-primary w-100" asp-controller="Books" asp-action="Index">Manage Books</a>
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-secondary w-100" asp-controller="Borrow" asp-action="Index">Borrowings</a>
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-info w-100" asp-controller="Reservation" asp-action="Index">Reservations</a>
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-warning w-100" asp-controller="Fines" asp-action="Index">Fines</a>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-3">
+        <a class="btn btn-dark w-100" asp-controller="Reports" asp-action="Index">Reports</a>
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-light w-100" asp-controller="LibraryProfile" asp-action="Edit">Library Profile</a>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-3">
+        <a class="btn btn-primary w-100" asp-controller="AdminMembers" asp-action="Index">Manage Members</a>
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-success w-100" asp-controller="AdminBorrowRequests" asp-action="Index">Borrowed Books</a>
+    </div>
+</div>

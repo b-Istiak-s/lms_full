@@ -1,0 +1,200 @@
+@* Person 3: Admin book management page. *@
+@model IEnumerable<LibraryManagementSystem.Models.Book>
+@{
+    ViewData["Title"] = "Books";
+    var statusFilter = ViewBag.StatusFilter as string ?? "all";
+    var activeBorrowers = ViewBag.ActiveBorrowers as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<section class="card page-card">
+    <div class="page-heading-row">
+        <div>
+            <h2>Book Management</h2>
+            <p class="muted">Admin can add books, search by ISBN, and check available or unavailable books.</p>
+        </div>
+        <a class="btn btn-success" asp-action="Create">Add New Book</a>
+    </div>
+
+    <div class="module-grid mb-3">
+        <div><strong>Total Books</strong><br />@ViewBag.TotalBooks</div>
+        <div><strong>Available</strong><br />@ViewBag.AvailableBooks</div>
+        <div><strong>Unavailable / Borrowed</strong><br />@ViewBag.UnavailableBooks</div>
+    </div>
+
+    <form asp-action="Index" method="get" class="search-row mb-3">
+        <input type="text" name="isbn" value="@ViewBag.SearchIsbn" placeholder="Search by ISBN" />
+        <select name="status">
+            <option value="all" selected="@(statusFilter == "all")">All books</option>
+            <option value="available" selected="@(statusFilter == "available")">Available only</option>
+            <option value="unavailable" selected="@(statusFilter == "unavailable")">Unavailable only</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Filter</button>
+        <a class="btn btn-secondary" asp-action="Index">Clear</a>
+    </form>
+
+    <div class="row g-2 mb-3">
+        <div class="col-md-3">
+            <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#borrowModal">Add Manual Borrowing</button>
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#reservationModal">Add Reservation</button>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-warning w-100" asp-controller="AdminBorrowRequests" asp-action="Index">View Borrowed Books</a>
+        </div>
+        <div class="col-md-3">
+            <a class="btn btn-primary w-100" asp-controller="Reservation" asp-action="Index">View Reservations</a>
+        </div>
+    </div>
+
+    @if (TempData["BorrowError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["BorrowError"]</div>
+    }
+
+    @if (TempData["ReservationError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ReservationError"]</div>
+    }
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Cover</th>
+                <th>Title</th>
+                <th>ISBN</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Status</th>
+                <th>Borrowed By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach(var bookItem in Model)
+        {
+            <tr>
+                <td style="width:90px">
+                    @if (!string.IsNullOrWhiteSpace(bookItem.CoverImagePath))
+                    {
+                        <img src="@bookItem.CoverImagePath" alt="@bookItem.Title cover" style="width:64px;height:88px;object-fit:cover;border-radius:8px;" onerror="this.onerror=null;this.src='/images/books/default.svg';" />
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>@bookItem.Title</td>
+                <td>@bookItem.ISBN</td>
+                <td>@bookItem.Author?.Name</td>
+                <td>@bookItem.Genre?.Name</td>
+                <td>
+                    @if (bookItem.IsAvailable)
+                    {
+                        <span class="status-available">Available</span>
+                    }
+                    else
+                    {
+                        <span class="status-borrowed">Unavailable</span>
+                    }
+                </td>
+                <td>
+                    @if (!bookItem.IsAvailable && activeBorrowers.ContainsKey(bookItem.BookId))
+                    {
+                        @activeBorrowers[bookItem.BookId]
+                    }
+                    else
+                    {
+                        <span class="muted">-</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@bookItem.BookId">Edit</a>
+                    <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@bookItem.BookId">Details</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@bookItem.BookId">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>
+
+<div class="modal fade" id="borrowModal" tabindex="-1" aria-labelledby="borrowModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="borrowModalLabel">Add Borrowing</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Borrow" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Book</label>
+                        <select name="bookId" class="form-select" required>
+                            <option value="">-- Select available book --</option>
+                            @foreach (var bookItem in Model.Where(b => b.IsAvailable))
+                            {
+                                <option value="@bookItem.BookId">@bookItem.Title (@bookItem.ISBN)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Member ID / Email</label>
+                        <input name="userName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Borrow Date</label>
+                        <input type="date" name="borrowDate" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" name="dueDate" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Borrowing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reservationModalLabel">Add Reservation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Reservation" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Book</label>
+                        <select name="bookId" class="form-select" required>
+                            <option value="">-- Select book --</option>
+                            @foreach (var bookItem in Model)
+                            {
+                                <option value="@bookItem.BookId">@bookItem.Title (@bookItem.ISBN)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Member ID / Email</label>
+                        <input name="userName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reservation Date</label>
+                        <input type="date" name="reservationDate" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Reservation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

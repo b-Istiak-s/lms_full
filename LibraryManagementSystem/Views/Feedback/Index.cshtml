@@ -1,0 +1,43 @@
+@model BookFeedback
+@{
+    ViewData["Title"] = "Book Feedback";
+}
+
+<section class="card page-card form-card">
+    <h2>Book Feedback and Rating</h2>
+    <p class="muted">Members can rate a book and leave a short comment.</p>
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+
+        <label>Member Name</label>
+        <input type="text" name="MemberName" value="@Model?.MemberName" required />
+
+        <label>Book Title</label>
+        <input type="text" name="BookTitle" value="@Model?.BookTitle" required />
+
+        <label>Rating</label>
+        <select name="Rating" required>
+            <option value="">Select rating</option>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very Good</option>
+            <option value="5">5 - Excellent</option>
+        </select>
+
+        <label>Comment</label>
+        <textarea name="Comment" rows="5" required>@Model?.Comment</textarea>
+
+        <button class="btn btn-primary" type="submit">Submit Feedback</button>
+    </form>
+
+    @if (ViewBag.Message != null)
+    {
+        <p class="success-message">@ViewBag.Message</p>
+    }
+    @if (ViewBag.Error != null)
+    {
+        <p class="error-message">@ViewBag.Error</p>
+    }
+</section>

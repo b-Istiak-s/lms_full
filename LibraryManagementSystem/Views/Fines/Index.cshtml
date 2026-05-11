@@ -1,0 +1,39 @@
+@* Person 3: Fine management page. *@
+@model IEnumerable<LibraryManagementSystem.Models.Fine>
+@{
+    ViewData["Title"] = "Fines";
+}
+
+<h2>Fines</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>User Name</th>
+            <th>Amount</th>
+            <th>Paid</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var f in Model)
+    {
+        <tr>
+            <td>@f.BorrowTransaction?.Book?.Title</td>
+            <td>@f.BorrowTransaction?.UserId</td>
+            <td>@f.Amount.ToString("C")</td>
+            <td>@(f.IsPaid ? "Yes" : "No")</td>
+            <td>
+                @if(!f.IsPaid)
+                {
+                    <form asp-action="MarkPaid" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@f.FineId" />
+                        <button class="btn btn-sm btn-success">Mark Paid</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

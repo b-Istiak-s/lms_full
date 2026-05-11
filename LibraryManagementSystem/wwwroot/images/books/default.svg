@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="330" viewBox="0 0 240 330">
+  <rect width="240" height="330" rx="18" fill="#dbeafe"/>
+  <rect x="28" y="35" width="184" height="260" rx="10" fill="#ffffff" opacity="0.7"/>
+  <text x="120" y="155" font-family="Arial, sans-serif" font-size="28" text-anchor="middle" fill="#1e3a8a" font-weight="700">Library</text>
+  <text x="120" y="190" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#1e40af">Book</text>
+</svg>

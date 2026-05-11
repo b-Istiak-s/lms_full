@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "User Panel";
+}
+
+<section class="hero-card user-panel-hero">
+    <h1>Welcome, @ViewBag.FullName</h1>
+    <p>You are logged in to the Library Management System.</p>
+</section>
+
+<section class="card page-card user-info-card">
+    <h2>Logged-in User Details</h2>
+    <table class="data-table">
+        <tbody>
+            <tr>
+                <th>Full Name</th>
+                <td>@ViewBag.FullName</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>@ViewBag.Email</td>
+            </tr>
+            <tr>
+                <th>Member ID</th>
+                <td>@ViewBag.MemberId</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>@ViewBag.Roles</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="card page-card">
+    <h2>Member Options</h2>
+    <div class="module-grid">
+        <div>
+            <h3>Browse Books</h3>
+            <p>Search and view available books in the library.</p>
+            <a class="btn btn-primary" asp-controller="MemberBooks" asp-action="Index">Browse Books</a>
+        </div>
+        <div>
+            <h3>Borrow Book</h3>
+            <p>Submit a borrowing request using your member information.</p>
+            <a class="btn btn-primary" asp-controller="MemberBorrow" asp-action="Index">Borrow a Book</a>
+        </div>
+        <div>
+            <h3>Borrow History</h3>
+            <p>View borrowing records submitted during this session.</p>
+            <a class="btn btn-primary" asp-controller="MemberBorrow" asp-action="History">View History</a>
+        </div>
+        <div>
+            <h3>Feedback</h3>
+            <p>Submit feedback and rating for a book.</p>
+            <a class="btn btn-primary" asp-controller="Feedback" asp-action="Index">Give Feedback</a>
+        </div>
+    </div>
+</section>

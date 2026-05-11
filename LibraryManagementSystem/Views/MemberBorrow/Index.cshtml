@@ -1,0 +1,36 @@
+@using LibraryManagementSystem.Models
+@{
+    ViewData["Title"] = "Borrow a Book";
+    var books = ViewBag.AvailableBooks as List<Book> ?? new List<Book>();
+}
+
+<section class="card page-card form-card">
+    <h2>Borrow a Book</h2>
+    <p class="muted">Select an available book. The book will be borrowed immediately and added to your borrow history.</p>
+
+    @if (TempData["BorrowMessage"] != null)
+    {
+        <p class="success-message">@TempData["BorrowMessage"]</p>
+    }
+
+    @if (!books.Any())
+    {
+        <p>No books are available for borrowing at the moment.</p>
+    }
+    else
+    {
+        <form asp-action="Request" method="post">
+            @Html.AntiForgeryToken()
+
+            <label>Available Book</label>
+            <select name="bookId" required>
+                @foreach (var book in books)
+                {
+                    <option value="@book.BookId">@book.Title - ISBN: @book.ISBN</option>
+                }
+            </select>
+
+            <button class="btn btn-primary" type="submit">Borrow Book</button>
+        </form>
+    }
+</section>

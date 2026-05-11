@@ -1,0 +1,29 @@
+@model FineCalculator
+@{
+    ViewData["Title"] = "Fine Calculator";
+}
+
+<section class="card page-card form-card">
+    <h2>Fine Calculator</h2>
+    <p class="muted">Members can estimate overdue fines. The sample fine rate is $2.00 per day.</p>
+
+    <form method="post">
+        @Html.AntiForgeryToken()
+
+        <label>Member Name</label>
+        <input type="text" name="MemberName" value="@Model?.MemberName" required />
+
+        <label>Book Title</label>
+        <input type="text" name="BookTitle" value="@Model?.BookTitle" required />
+
+        <label>Days Late</label>
+        <input type="number" name="DaysLate" value="@Model?.DaysLate" min="0" required />
+
+        <button class="btn btn-primary" type="submit">Calculate Fine</button>
+    </form>
+
+    @if (ViewBag.Result != null)
+    {
+        <p class="error-message">@ViewBag.Result</p>
+    }
+</section>

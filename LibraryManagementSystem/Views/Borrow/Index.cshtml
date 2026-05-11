@@ -1,0 +1,175 @@
+@* Person 3: Borrowing records management page. *@
+@model IEnumerable<LibraryManagementSystem.Models.BorrowTransaction>
+@{
+    ViewData["Title"] = "Borrowings";
+}
+
+<h2>Borrowings</h2>
+
+@if (TempData["FineError"] != null)
+{
+    <div class="alert alert-danger">@TempData["FineError"]</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Member ID</th>
+            <th>Borrow Date</th>
+            <th>Due Date</th>
+            <th>Returned</th>
+            <th>Return Date</th>
+            <th>Fine</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach(var b in Model)
+    {
+        <tr>
+            <td>@b.Book?.Title</td>
+            <td>@b.UserId</td>
+            <td>@b.BorrowDate.ToShortDateString()</td>
+            <td>@b.DueDate.ToShortDateString()</td>
+            <td>@(b.IsReturned ? "Yes" : "No")</td>
+            <td>@(b.ReturnDate.HasValue ? b.ReturnDate.Value.ToShortDateString() : "-")</td>
+            <td>@(b.Fine != null ? b.Fine.Amount.ToString("C") : "-")</td>
+            <td>
+                @if(!b.IsReturned)
+                {
+                    <button type="button"
+                            class="btn btn-sm btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#returnModal"
+                            data-id="@b.BorrowTransactionId"
+                            data-book="@b.Book?.Title"
+                            data-member="@b.UserId"
+                            data-borrow-date='@b.BorrowDate.ToString("yyyy-MM-dd")'>
+                        Return
+                    </button>
+                }
+                <button type="button"
+                        class="btn btn-sm btn-warning"
+                        data-bs-toggle="modal"
+                        data-bs-target="#fineModal"
+                        data-borrow-id="@b.BorrowTransactionId"
+                        data-book-title="@b.Book?.Title"
+                        data-member-id="@b.UserId"
+                        data-amount="@(b.Fine?.Amount ?? 0)">
+                    @(b.Fine != null ? "Edit Fine" : "Add Fine")
+                </button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+<div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnModalLabel">Return Book and Auto Calculate Fine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Return" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input type="hidden" id="returnBorrowId" name="id" />
+                    <div class="mb-3">
+                        <label class="form-label">Book</label>
+                        <input type="text" id="returnBookTitle" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Member ID</label>
+                        <input type="text" id="returnMember" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Borrowing Date</label>
+                        <input type="date" id="returnBorrowDate" name="borrowDate" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Return Date</label>
+                        <input type="date" id="returnDate" name="returnDate" class="form-control" required />
+                    </div>
+                    <p class="muted">The system recalculates the due date from the borrowing rule and records the fine automatically.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Return and Calculate Fine</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fineModal" tabindex="-1" aria-labelledby="fineModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fineModalLabel">Add / Edit Fine</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="AddFine" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="borrowTransactionId" name="borrowTransactionId" />
+                    <div class="mb-3">
+                        <label class="form-label">Book</label>
+                        <input type="text" id="fineBookTitle" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Member ID</label>
+                        <input type="text" id="fineMemberId" class="form-control" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fine Amount</label>
+                        <input type="number" step="0.01" min="0" id="fineAmount" name="amount" class="form-control" required />
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="fineIsPaid" name="isPaid" value="true" />
+                        <input type="hidden" name="isPaid" value="false" />
+                        <label class="form-check-label" for="fineIsPaid">Mark as paid</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Fine</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const returnModal = document.getElementById('returnModal');
+        returnModal?.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            if (!button) return;
+
+            document.getElementById('returnBorrowId').value = button.getAttribute('data-id') ?? '';
+            document.getElementById('returnBookTitle').value = button.getAttribute('data-book') ?? '';
+            document.getElementById('returnMember').value = button.getAttribute('data-member') ?? '';
+            document.getElementById('returnBorrowDate').value = button.getAttribute('data-borrow-date') ?? '';
+            document.getElementById('returnDate').valueAsDate = new Date();
+        });
+
+        const fineModal = document.getElementById('fineModal');
+        fineModal?.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            if (!button) return;
+
+            const borrowId = button.getAttribute('data-borrow-id');
+            const bookTitle = button.getAttribute('data-book-title');
+            const memberId = button.getAttribute('data-member-id');
+            const amount = button.getAttribute('data-amount');
+
+            document.getElementById('borrowTransactionId').value = borrowId ?? '';
+            document.getElementById('fineBookTitle').value = bookTitle ?? '';
+            document.getElementById('fineMemberId').value = memberId ?? '';
+            document.getElementById('fineAmount').value = amount ?? '0';
+            document.getElementById('fineIsPaid').checked = false;
+        });
+    </script>
+}
