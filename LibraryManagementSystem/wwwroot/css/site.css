@@ -600,11 +600,17 @@ body {
 .admin-data-panel {
     height: auto;
     max-height: none;
-    overflow-x: auto;
-    overflow-y: visible;
+    overflow: visible;
     border: 1px solid rgba(121, 131, 152, 0.16);
     border-radius: 22px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(249, 250, 252, 0.96));
+}
+
+/* Horizontal scroll wrapper so we don't create a new scroll container that
+   interferes with sticky table headers. Wrap tables using .table-scroll */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .admin-data-panel-page-scroll {
@@ -630,9 +636,11 @@ body {
 
 .admin-data-table th {
     position: sticky;
+    /* sit below the global navbar (z-index:1030) but above panel content */
     top: var(--admin-sticky-offset);
-    z-index: 1;
+    z-index: 1029;
     background: #4b2aad;
+    box-shadow: 0 6px 12px rgba(11, 15, 30, 0.06);
 }
 
 .admin-data-table tr:last-child td {
