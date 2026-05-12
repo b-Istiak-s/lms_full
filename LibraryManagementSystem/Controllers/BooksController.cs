@@ -68,6 +68,12 @@ namespace LibraryManagementSystem.Controllers
                 .Where(u => memberIds.Contains(u.Id))
                 .ToDictionaryAsync(u => u.Id, u => u);
 
+            var memberUsers = await userManager.GetUsersInRoleAsync("Member");
+            ViewBag.MemberOptions = memberUsers
+                .OrderBy(u => u.FullName)
+                .ThenBy(u => u.Email)
+                .ToList();
+
             ViewBag.ActiveBorrowers = activeBorrowings
                 .GroupBy(t => t.BookId)
                 .ToDictionary(

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
 using System;
+using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -13,10 +15,12 @@ namespace LibraryManagementSystem.Controllers
     public class ReservationController : Controller
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ReservationController(ApplicationDbContext context)
+        public ReservationController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             dbContext = context;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -47,11 +51,30 @@ namespace LibraryManagementSystem.Controllers
                 return RedirectToAction("Index", "Books");
             }
 
+            var member = await userManager.Users.FirstOrDefaultAsync(u => u.Id == userName.Trim() || u.Email == userName.Trim());
+            if (member == null || !await userManager.IsInRoleAsync(member, "Member"))
+            {
+                TempData["ReservationError"] = "Please select a valid member.";
+                return RedirectToAction("Index", "Books");
+            }
+
+            var reservationStart = reservationDate?.Date ?? DateTime.Today;
+            var activeBorrow = await dbContext.BorrowTransactions
+                .Where(t => t.BookId == bookId && !t.IsReturned)
+                .OrderByDescending(t => t.DueDate)
+                .FirstOrDefaultAsync();
+
+            if (activeBorrow != null && reservationStart <= activeBorrow.DueDate.Date)
+            {
+                TempData["ReservationError"] = $"This book is already borrowed until {activeBorrow.DueDate:MM/dd/yyyy}.";
+                return RedirectToAction("Index", "Books");
+            }
+
             var reservation = new Reservation
             {
                 BookId = bookId,
-                UserId = userName.Trim(),
-                ReservationDate = reservationDate?.Date ?? DateTime.Now.Date
+                UserId = member.Id,
+                ReservationDate = reservationStart
             };
 
             dbContext.Reservations.Add(reservation);

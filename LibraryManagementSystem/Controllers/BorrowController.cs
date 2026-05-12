@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -13,10 +15,12 @@ namespace LibraryManagementSystem.Controllers
     public class BorrowController : Controller
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public BorrowController(ApplicationDbContext context)
+        public BorrowController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             dbContext = context;
+            this.userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -50,6 +54,13 @@ namespace LibraryManagementSystem.Controllers
                 return RedirectToAction("Index", "Books");
             }
 
+            var member = await userManager.Users.FirstOrDefaultAsync(u => u.Id == userName.Trim() || u.Email == userName.Trim());
+            if (member == null || !await userManager.IsInRoleAsync(member, "Member"))
+            {
+                TempData["BorrowError"] = "Please select a valid member.";
+                return RedirectToAction("Index", "Books");
+            }
+
             var startDate = borrowDate?.Date ?? DateTime.Now.Date;
             var endDate = dueDate?.Date ?? startDate.AddDays(14);
             if (endDate < startDate)
@@ -61,7 +72,7 @@ namespace LibraryManagementSystem.Controllers
             var tx = new BorrowTransaction
             {
                 BookId = bookId,
-                UserId = userName.Trim(),
+                UserId = member.Id,
                 BorrowDate = startDate,
                 DueDate = endDate,
                 IsReturned = false

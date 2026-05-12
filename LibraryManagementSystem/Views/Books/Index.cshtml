@@ -1,9 +1,11 @@
 @* Person 3: Admin book management page. *@
 @model IEnumerable<LibraryManagementSystem.Models.Book>
+@using LibraryManagementSystem.Models
 @{
     ViewData["Title"] = "Books";
     var statusFilter = ViewBag.StatusFilter as string ?? "all";
     var activeBorrowers = ViewBag.ActiveBorrowers as Dictionary<int, string> ?? new Dictionary<int, string>();
+    var memberOptions = ViewBag.MemberOptions as List<ApplicationUser> ?? new List<ApplicationUser>();
 }
 
 <section class="admin-page">
@@ -138,8 +140,14 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Member ID / Email</label>
-                        <input name="userName" class="form-control" required />
+                        <label class="form-label">Member</label>
+                        <select name="userName" class="form-select" required>
+                            <option value="">Select member</option>
+                            @foreach (var member in memberOptions)
+                            {
+                                <option value="@member.Id">@(string.IsNullOrWhiteSpace(member.FullName) ? member.Email : member.FullName) (@member.Email)</option>
+                            }
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Borrow Date</label>
@@ -180,8 +188,14 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Member ID / Email</label>
-                        <input name="userName" class="form-control" required />
+                        <label class="form-label">Member</label>
+                        <select name="userName" class="form-select" required>
+                            <option value="">Select member</option>
+                            @foreach (var member in memberOptions)
+                            {
+                                <option value="@member.Id">@(string.IsNullOrWhiteSpace(member.FullName) ? member.Email : member.FullName) (@member.Email)</option>
+                            }
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Reservation Date</label>

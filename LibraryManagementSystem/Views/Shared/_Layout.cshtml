@@ -7,7 +7,7 @@
     var actionName = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
     var isAdminPage = User.IsInRole("Admin") && new[]
     {
-        "Admin", "Books", "Borrow", "Reservation", "Fines", "Reports", "LibraryProfile", "AdminMembers", "AdminBorrowRequests", "AdminFeedback"
+        "Admin", "Books", "AdminMembers", "AdminFeedback", "AdminBorrowRequests"
     }.Contains(controllerName, StringComparer.OrdinalIgnoreCase);
     var bodyClass = isAdminPage ? $"admin-body admin-{controllerName.ToLowerInvariant()} admin-{actionName.ToLowerInvariant()}" : string.Empty;
     var initials = "U";
@@ -45,42 +45,48 @@
                 </button>
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="MemberBooks" asp-action="Index">Browse Books</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="MemberBorrow" asp-action="Index">Borrow</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="MemberBorrow" asp-action="History">Borrow History</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Fine" asp-action="Index">Fine</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Feedback" asp-action="Index">Feedback</a>
-                        </li>
-                        @if (User.Identity?.IsAuthenticated == true)
+                        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="UserPanel" asp-action="Index">User Panel</a>
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            @if (User.IsInRole("Admin"))
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AdminMembers" asp-action="Index">Members</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AdminFeedback" asp-action="Index">Feedback</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AdminBorrowRequests" asp-action="Index">Borrowed Books</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="MemberBooks" asp-action="Index">Browse Books</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="MemberBorrow" asp-action="Index">Borrow</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="MemberBorrow" asp-action="History">Borrow History</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Fine" asp-action="Index">Fine</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Feedback" asp-action="Index">Feedback</a>
+                            </li>
+                            @if (User.Identity?.IsAuthenticated == true)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="AdminMembers" asp-action="Index">Members</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="AdminFeedback" asp-action="Index">Feedback</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="AdminBorrowRequests" asp-action="Index">Borrowed Books</a>
+                                    <a class="nav-link text-dark" asp-controller="UserPanel" asp-action="Index">User Panel</a>
                                 </li>
                             }
                         }
