@@ -95,6 +95,15 @@
             </div>
         </a>
 
+        <a class="admin-dashboard-card admin-card-slate" asp-controller="AdminFeedback" asp-action="Index">
+            <img class="admin-card-image" src="~/images/static/report.png" alt="" />
+            <h2 class="admin-card-title">Feedback</h2>
+            <div class="admin-card-meta">
+                <p class="admin-card-caption">Read member feedback and rating submissions.</p>
+                <span class="admin-card-count">@ViewBag.FeedbackCount</span>
+            </div>
+        </a>
+
         <form asp-controller="Account" asp-action="Logout" method="post" class="admin-signout-form">
             @Html.AntiForgeryToken()
             <button type="submit" class="admin-dashboard-card admin-card-magenta">

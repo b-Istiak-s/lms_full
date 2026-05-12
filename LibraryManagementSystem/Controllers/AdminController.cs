@@ -24,6 +24,7 @@ namespace LibraryManagementSystem.Controllers
             ViewBag.MemberCount = await dbContext.Users.CountAsync();
             ViewBag.PendingReservations = await dbContext.Reservations.CountAsync();
             ViewBag.UnpaidFines = await dbContext.Fines.CountAsync(f => !f.IsPaid);
+            ViewBag.FeedbackCount = await dbContext.Feedbacks.CountAsync();
             return View();
         }
     }

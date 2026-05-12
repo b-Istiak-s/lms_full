@@ -8,7 +8,7 @@
         <div class="admin-section-header">
             <div>
                 <h1 class="admin-section-title">Reports</h1>
-                <p class="admin-section-copy">Quick snapshot of stock, active borrowing, overdue items, and unpaid fines.</p>
+                <p class="admin-section-copy">Quick snapshot of stock, active borrowing, and unpaid fines.</p>
             </div>
             <div class="admin-btn-group">
                 <a class="btn admin-btn btn-light" asp-controller="Reservation" asp-action="Index">Reservations</a>
@@ -19,7 +19,6 @@
         <div class="admin-summary-grid">
             <div class="admin-summary-card"><span>Total Books</span><strong>@ViewBag.TotalBooks</strong></div>
             <div class="admin-summary-card"><span>Currently Borrowed</span><strong>@ViewBag.Borrowed</strong></div>
-            <div class="admin-summary-card"><span>Overdue</span><strong>@ViewBag.Overdue</strong></div>
             <div class="admin-summary-card"><span>Unpaid Fines</span><strong>@ViewBag.UnpaidFines.ToString("C")</strong></div>
         </div>
     </div>

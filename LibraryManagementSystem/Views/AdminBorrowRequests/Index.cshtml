@@ -103,7 +103,7 @@
                                                 Return Book
                                             </button>
                                         }
-                                        @if (tx.Fine != null && !tx.Fine.IsPaid)
+                                        @if (tx.IsReturned && tx.Fine != null && !tx.Fine.IsPaid)
                                         {
                                             <form asp-action="MarkFinePaid" method="post" class="inline-form">
                                                 @Html.AntiForgeryToken()

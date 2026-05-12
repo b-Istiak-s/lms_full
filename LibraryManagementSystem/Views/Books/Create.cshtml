@@ -61,7 +61,7 @@
 
                         <div class="admin-field full">
                             <label for="coverImage">Book Cover Image</label>
-                            <input id="coverImage" type="file" name="coverImage" accept="image/*" class="form-control" />
+                            <input id="coverImage" type="file" name="coverImage" accept="image/*" class="form-control" data-preview-target="#coverPreview" />
                             <small>PNG, JPG, WEBP, and other browser-supported image formats are accepted.</small>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
 
             <aside class="admin-side-card admin-side-card-compact">
                 <div class="admin-image-preview">
-                    <span>Cover preview area</span>
+                    <img id="coverPreview" src="@Url.Content("~/images/books/default.svg")" alt="Cover preview" />
                 </div>
                 <h2 class="h4 mb-3">Before you save</h2>
                 <ul class="admin-side-list">

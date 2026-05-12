@@ -62,7 +62,7 @@
 
                         <div class="admin-field full">
                             <label for="coverImage">Replace Cover Image</label>
-                            <input id="coverImage" type="file" name="coverImage" accept="image/*" class="form-control" />
+                            <input id="coverImage" type="file" name="coverImage" accept="image/*" class="form-control" data-preview-target="#coverPreview" />
                             <small>Leave this empty to keep the current book cover.</small>
                         </div>
 
@@ -83,14 +83,7 @@
 
             <aside class="admin-side-card">
                 <div class="admin-image-preview">
-                    @if (!string.IsNullOrWhiteSpace(Model.CoverImagePath))
-                    {
-                        <img src="@Model.CoverImagePath" alt="@Model.Title cover" onerror="this.onerror=null;this.src='/images/books/default.svg';" />
-                    }
-                    else
-                    {
-                        <span>No cover uploaded</span>
-                    }
+                    <img id="coverPreview" src="@(string.IsNullOrWhiteSpace(Model.CoverImagePath) ? Url.Content("~/images/books/default.svg") : Model.CoverImagePath)" alt="@Model.Title cover" onerror="this.onerror=null;this.src='/images/books/default.svg';" />
                 </div>
                 <h2 class="h4 mb-3">Current record</h2>
                 <ul class="admin-side-list">

@@ -1,0 +1,45 @@
+@model IEnumerable<LibraryManagementSystem.Models.Feedback>
+@using LibraryManagementSystem.Models
+@{
+    ViewData["Title"] = "Feedback";
+    var users = ViewBag.Users as Dictionary<string, ApplicationUser> ?? new Dictionary<string, ApplicationUser>();
+}
+
+<section class="admin-page">
+    <div class="admin-page-card admin-surface">
+        <div class="admin-section-header">
+            <div>
+                <h1 class="admin-section-title">Feedback</h1>
+                <p class="admin-section-copy">Review book feedback submitted by members.</p>
+            </div>
+            <a class="btn admin-btn btn-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
+        </div>
+
+        <div class="admin-data-panel">
+            <div class="table-scroll">
+                <table class="data-table admin-data-table">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Member</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var feedback in Model)
+                    {
+                        var user = users.ContainsKey(feedback.UserId) ? users[feedback.UserId] : null;
+                        <tr>
+                            <td>@feedback.Book?.Title</td>
+                            <td>@(user?.FullName ?? user?.Email ?? feedback.UserId)</td>
+                            <td>@feedback.Rating</td>
+                            <td>@feedback.Comment</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

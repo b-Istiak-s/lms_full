@@ -10,7 +10,10 @@
                 <h1 class="admin-section-title">Manage Members</h1>
                 <p class="admin-section-copy">Review registered member accounts and remove records when needed.</p>
             </div>
-            <a class="btn admin-btn btn-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
+            <div class="admin-btn-group">
+                <a class="btn admin-btn btn-primary" asp-action="Add">Add Member</a>
+                <a class="btn admin-btn btn-light" asp-controller="Admin" asp-action="Index">Dashboard</a>
+            </div>
         </div>
 
         @if (TempData["MemberMessage"] != null)
@@ -32,7 +35,7 @@
                             <th>Member ID</th>
                             <th>Full Name</th>
                             <th>Email</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -43,6 +46,7 @@
                                 <td>@member.FullName</td>
                                 <td>@member.Email</td>
                                 <td>
+                                    <a class="btn admin-btn btn-secondary me-2" asp-action="Edit" asp-route-id="@member.Id">Edit</a>
                                     <form asp-action="Delete" method="post" class="inline-form" onsubmit="return confirm('Delete this member account?');">
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@member.Id" />

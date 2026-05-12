@@ -1,7 +1,9 @@
 @* Person 3: Fine management page. *@
 @model IEnumerable<LibraryManagementSystem.Models.Fine>
+@using LibraryManagementSystem.Models
 @{
     ViewData["Title"] = "Fines";
+    var users = ViewBag.Users as Dictionary<string, ApplicationUser> ?? new Dictionary<string, ApplicationUser>();
 }
 
 <section class="admin-page">
@@ -29,9 +31,17 @@
                 <tbody>
                 @foreach (var f in Model)
                 {
+                    var user = f.BorrowTransaction?.UserId != null && users.ContainsKey(f.BorrowTransaction.UserId) ? users[f.BorrowTransaction.UserId] : null;
                     <tr>
                         <td>@f.BorrowTransaction?.Book?.Title</td>
-                        <td>@f.BorrowTransaction?.UserId</td>
+                        <td>
+                            @(user?.FullName ?? user?.Email ?? f.BorrowTransaction?.UserId)
+                            @if (!string.IsNullOrWhiteSpace(user?.Email) && !string.Equals(user?.FullName, user?.Email, StringComparison.OrdinalIgnoreCase))
+                            {
+                                <br />
+                                <span class="muted">@user.Email</span>
+                            }
+                        </td>
                         <td>@f.Amount.ToString("C")</td>
                         <td>
                             <span class="admin-status-pill @(f.IsPaid ? "paid" : "unpaid")">

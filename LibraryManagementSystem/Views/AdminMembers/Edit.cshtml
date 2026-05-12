@@ -1,0 +1,44 @@
+@model LibraryManagementSystem.Controllers.AdminMemberFormViewModel
+@{
+    ViewData["Title"] = "Edit Member";
+}
+
+<section class="admin-page">
+    <div class="admin-page-card admin-surface">
+        <div class="admin-section-header">
+            <div>
+                <h1 class="admin-section-title">Edit Member</h1>
+                <p class="admin-section-copy">Update the member name and email address.</p>
+            </div>
+            <a class="btn admin-btn btn-light" asp-action="Index">Back to Members</a>
+        </div>
+
+        <div class="admin-form-card">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                <div class="admin-form-grid">
+                    <div class="admin-field">
+                        <label asp-for="FullName"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="admin-field">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn admin-btn btn-primary">Save Changes</button>
+                    <a class="btn admin-btn btn-secondary" asp-action="Index">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

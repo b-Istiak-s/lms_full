@@ -22,12 +22,10 @@ namespace LibraryManagementSystem.Controllers
         {
             var totalBooks = await dbContext.Books.CountAsync();
             var borrowed = await dbContext.BorrowTransactions.CountAsync(b => !b.IsReturned);
-            var overdue = await dbContext.BorrowTransactions.CountAsync(b => !b.IsReturned && b.DueDate < System.DateTime.Now);
             var unpaidFines = await dbContext.Fines.Where(f => !f.IsPaid).SumAsync(f => (decimal?)f.Amount) ?? 0m;
 
             ViewBag.TotalBooks = totalBooks;
             ViewBag.Borrowed = borrowed;
-            ViewBag.Overdue = overdue;
             ViewBag.UnpaidFines = unpaidFines;
 
             return View();

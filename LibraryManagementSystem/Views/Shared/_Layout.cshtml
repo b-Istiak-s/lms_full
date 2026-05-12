@@ -7,7 +7,7 @@
     var actionName = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
     var isAdminPage = User.IsInRole("Admin") && new[]
     {
-        "Admin", "Books", "Borrow", "Reservation", "Fines", "Reports", "LibraryProfile", "AdminMembers", "AdminBorrowRequests"
+        "Admin", "Books", "Borrow", "Reservation", "Fines", "Reports", "LibraryProfile", "AdminMembers", "AdminBorrowRequests", "AdminFeedback"
     }.Contains(controllerName, StringComparer.OrdinalIgnoreCase);
     var bodyClass = isAdminPage ? $"admin-body admin-{controllerName.ToLowerInvariant()} admin-{actionName.ToLowerInvariant()}" : string.Empty;
     var initials = "U";
@@ -75,6 +75,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="AdminMembers" asp-action="Index">Members</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="AdminFeedback" asp-action="Index">Feedback</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="AdminBorrowRequests" asp-action="Index">Borrowed Books</a>
