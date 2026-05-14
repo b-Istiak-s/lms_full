@@ -49,6 +49,24 @@ namespace LibraryManagementSystem.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> About()
+        {
+            var profile = await dbContext.LibraryProfiles.FirstOrDefaultAsync();
+            if (profile == null)
+            {
+                profile = new LibraryProfile
+                {
+                    Name = "Our Library",
+                    Location = "",
+                    OperatingHours = "",
+                    ContactDetails = ""
+                };
+            }
+
+            return View(profile);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [AllowAnonymous]
         public IActionResult Error()
