@@ -56,3 +56,49 @@
         </div>
     </div>
 </section>
+
+<section class="card page-card">
+    <h2>Your Feedback</h2>
+    @{ var feedbacks = ViewBag.UserFeedbacks as List<LibraryManagementSystem.Models.Feedback> ?? new List<LibraryManagementSystem.Models.Feedback>(); }
+    @if (!feedbacks.Any())
+    {
+        <p>You have not submitted any feedback yet.</p>
+    }
+    else
+    {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Admin Reply</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in feedbacks)
+                {
+                    <tr>
+                        <td>@f.Book?.Title</td>
+                        <td>@f.Rating</td>
+                        <td>@f.Comment</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(f.AdminReply))
+                            {
+                                <div>@f.AdminReply</div>
+                                @if (f.AdminReplyDate.HasValue)
+                                {
+                                    <small class="text-muted">@f.AdminReplyDate.Value.ToLocalTime().ToString("g")</small>
+                                }
+                            }
+                            else
+                            {
+                                <em>No reply yet</em>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

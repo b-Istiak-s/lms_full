@@ -1,5 +1,6 @@
 // Person 1: Database design, model classes, relationships, DbContext, and migration support.
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace LibraryManagementSystem.Models
 {
@@ -16,5 +17,11 @@ namespace LibraryManagementSystem.Models
         public int Rating { get; set; }
 
         public string? Comment { get; set; }
+        
+        // Admin reply from the library staff
+        public string? AdminReply { get; set; }
+
+        // When the admin replied
+        public DateTime? AdminReplyDate { get; set; }
     }
 }

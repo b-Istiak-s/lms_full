@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace LibraryManagementSystem.Controllers
 {
@@ -33,6 +34,25 @@ namespace LibraryManagementSystem.Controllers
 
             ViewBag.Users = users;
             return View(feedbacks);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reply(int id, string adminReply)
+        {
+            var feedback = await _context.Feedbacks.FindAsync(id);
+            if (feedback == null)
+            {
+                return NotFound();
+            }
+
+            feedback.AdminReply = adminReply;
+            feedback.AdminReplyDate = DateTime.UtcNow;
+
+            _context.Update(feedback);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

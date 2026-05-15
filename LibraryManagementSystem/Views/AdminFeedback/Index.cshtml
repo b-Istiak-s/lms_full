@@ -24,6 +24,7 @@
                             <th>Member</th>
                             <th>Rating</th>
                             <th>Comment</th>
+                            <th>Admin Reply</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +36,28 @@
                             <td>@(user?.FullName ?? user?.Email ?? feedback.UserId)</td>
                             <td>@feedback.Rating</td>
                             <td>@feedback.Comment</td>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(feedback.AdminReply))
+                                {
+                                    <div class="admin-reply">
+                                        <strong>Reply:</strong>
+                                        <div>@feedback.AdminReply</div>
+                                        @if (feedback.AdminReplyDate.HasValue)
+                                        {
+                                            <small class="text-muted">@feedback.AdminReplyDate.Value.ToLocalTime().ToString("g")</small>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <form asp-action="Reply" method="post">
+                                        <input type="hidden" name="id" value="@feedback.FeedbackId" />
+                                        <textarea name="adminReply" class="form-control" rows="2" placeholder="Write a reply..."></textarea>
+                                        <button type="submit" class="btn btn-sm btn-primary mt-1">Reply</button>
+                                        @Html.AntiForgeryToken()
+                                    </form>
+                                }
+                            </td>
                         </tr>
                     }
                     </tbody>
