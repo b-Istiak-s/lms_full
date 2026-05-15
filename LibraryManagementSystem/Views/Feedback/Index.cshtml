@@ -1,6 +1,8 @@
 @model BookFeedback
+@using LibraryManagementSystem.Models
 @{
     ViewData["Title"] = "Book Feedback";
+    var books = ViewBag.AvailableBooks as List<Book> ?? new List<Book>();
 }
 
 <section class="card page-card form-card">
@@ -11,10 +13,16 @@
         @Html.AntiForgeryToken()
 
         <label>Member Name</label>
-        <input type="text" name="MemberName" value="@Model?.MemberName" required />
+        <input type="text" name="MemberName" value="@Model?.MemberName" readonly />
 
-        <label>Book Title</label>
-        <input type="text" name="BookTitle" value="@Model?.BookTitle" required />
+        <label>Book</label>
+        <select name="BookId" required>
+            <option value="">Select a book</option>
+            @foreach (var book in books)
+            {
+                <option value="@book.BookId" selected="@(Model?.BookId == book.BookId)">@book.Title</option>
+            }
+        </select>
 
         <label>Rating</label>
         <select name="Rating" required>
